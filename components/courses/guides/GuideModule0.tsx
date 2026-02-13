@@ -385,7 +385,7 @@ function Checkpoint({ question, onComplete }: { question: CheckpointQuestion; on
         <CheckCircle2 className="w-4 h-4 text-indigo-600" />
         <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Checkpoint de Comprensión</span>
       </div>
-      <p className="text-sm font-semibold text-gray-900 mb-4">{question.question}</p>
+      <p className="text-[15px] md:text-base font-semibold text-gray-900 mb-4 leading-relaxed">{question.question}</p>
 
       <div className="space-y-2 mb-4">
         {question.options.map((opt, i) => {
@@ -393,7 +393,7 @@ function Checkpoint({ question, onComplete }: { question: CheckpointQuestion; on
           if (revealed) {
             if (i === question.correctIndex) classes = "border-emerald-400 bg-emerald-50 ring-2 ring-emerald-200";
             else if (i === selected) classes = "border-red-400 bg-red-50 ring-2 ring-red-200";
-            else classes = "border-gray-200 bg-gray-50 opacity-50";
+            else classes = "border-gray-200 bg-gray-50 text-gray-600";
           } else if (i === selected) {
             classes = "border-indigo-400 bg-indigo-50 ring-2 ring-indigo-200";
           }
@@ -403,7 +403,7 @@ function Checkpoint({ question, onComplete }: { question: CheckpointQuestion; on
               key={i}
               onClick={() => !revealed && setSelected(i)}
               disabled={revealed}
-              className={`w-full text-left rounded-lg border-2 p-3 text-sm transition-all ${classes}`}
+              className={`w-full text-left rounded-lg border-2 p-4 text-[15px] md:text-base text-gray-900 leading-relaxed transition-all ${classes}`}
             >
               {opt}
             </button>
@@ -415,7 +415,7 @@ function Checkpoint({ question, onComplete }: { question: CheckpointQuestion; on
         <button
           onClick={handleCheck}
           disabled={selected === null}
-          className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all ${
+          className={`w-full py-3 rounded-xl font-semibold text-base transition-all ${
             selected !== null ? "bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"
           }`}
         >
@@ -423,7 +423,7 @@ function Checkpoint({ question, onComplete }: { question: CheckpointQuestion; on
         </button>
       ) : (
         <div className={`rounded-lg p-3 ${isCorrect ? "bg-emerald-100 border border-emerald-300" : "bg-amber-100 border border-amber-300"}`}>
-          <p className="text-sm leading-relaxed" style={{ color: isCorrect ? "#064e3b" : "#78350f" }}>
+          <p className="text-[15px] md:text-base leading-relaxed" style={{ color: isCorrect ? "#064e3b" : "#78350f" }}>
             {isCorrect ? "✓ " : "✗ "}{question.explanation}
           </p>
         </div>
@@ -909,7 +909,7 @@ export default function GuideModule0() {
 
   return (
     <div className="py-10 px-4">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">

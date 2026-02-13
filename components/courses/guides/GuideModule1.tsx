@@ -61,29 +61,38 @@ function Checkpoint({ question, onComplete }: { question: CheckpointQuestion; on
         <CheckCircle2 className="w-4 h-4 text-amber-600" />
         <span className="text-xs font-bold text-amber-600 uppercase tracking-wider">Checkpoint</span>
       </div>
-      <p className="text-sm font-semibold text-gray-900 mb-4">{question.question}</p>
+      <p className="text-[15px] md:text-base font-semibold text-gray-900 mb-4 leading-relaxed">{question.question}</p>
       <div className="space-y-2 mb-4">
         {question.options.map((opt, i) => {
           let cls = "border-gray-200 bg-white";
           if (revealed) {
             if (i === question.correctIndex) cls = "border-emerald-400 bg-emerald-50 ring-2 ring-emerald-200";
             else if (i === selected) cls = "border-red-400 bg-red-50 ring-2 ring-red-200";
-            else cls = "border-gray-200 bg-gray-50 opacity-50";
+            else cls = "border-gray-200 bg-gray-50 text-gray-600";
           } else if (i === selected) cls = "border-amber-400 bg-amber-50 ring-2 ring-amber-200";
           return (
-            <button key={i} onClick={() => !revealed && setSelected(i)} disabled={revealed}
-              className={`w-full text-left rounded-lg border-2 p-3 text-sm transition-all ${cls}`}>{opt}</button>
+            <button
+              key={i}
+              onClick={() => !revealed && setSelected(i)}
+              disabled={revealed}
+              className={`w-full text-left rounded-lg border-2 p-4 text-[15px] md:text-base text-gray-900 leading-relaxed transition-all ${cls}`}
+            >
+              {opt}
+            </button>
           );
         })}
       </div>
       {!revealed ? (
-        <button onClick={handleCheck} disabled={selected === null}
-          className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all ${selected !== null ? "bg-amber-600 text-white hover:bg-amber-700 cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
+        <button
+          onClick={handleCheck}
+          disabled={selected === null}
+          className={`w-full py-3 rounded-xl font-semibold text-base transition-all ${selected !== null ? "bg-amber-600 text-white hover:bg-amber-700 cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+        >
           Verificar
         </button>
       ) : (
         <div className={`rounded-lg p-3 ${isCorrect ? "bg-emerald-100 border border-emerald-300" : "bg-red-100 border border-red-300"}`}>
-          <p className="text-sm leading-relaxed" style={{ color: isCorrect ? "#064e3b" : "#7f1d1d" }}>
+          <p className="text-[15px] md:text-base leading-relaxed" style={{ color: isCorrect ? "#064e3b" : "#7f1d1d" }}>
             {isCorrect ? "✓ " : "✗ "}{question.explanation}
           </p>
         </div>
@@ -702,7 +711,7 @@ export default function GuideModule1() {
 
   return (
     <div className="py-10 px-4">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">
             <Target className="w-3.5 h-3.5" />
