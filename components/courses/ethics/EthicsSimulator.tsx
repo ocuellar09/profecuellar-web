@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Scale,
   ShieldAlert,
@@ -947,16 +947,30 @@ function ScenarioPlayer({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
+const ETHICS_STORAGE_KEY = "profecuellar:ethics-simulator:v1";
+
 export default function EthicsSimulator() {
   const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
-  const [completedScenarios, setCompletedScenarios] = useState<Set<string>>(new Set());
+  const [completedScenarios, setCompletedScenarios] = useState<Set<string>>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(ETHICS_STORAGE_KEY) : null;
+      if (raw) return new Set(JSON.parse(raw));
+    } catch {}
+    return new Set();
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(ETHICS_STORAGE_KEY, JSON.stringify([...completedScenarios]));
+    } catch {}
+  }, [completedScenarios]);
 
   const activeScenario = scenarios.find((s) => s.id === activeScenarioId);
   const progress = completedScenarios.size;
 
   if (activeScenario) {
     return (
-      <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+      <div className="min-h-screen bg-gray-50 py-10 px-4">
         <ScenarioPlayer
           key={activeScenario.id}
           scenario={activeScenario}
@@ -970,7 +984,7 @@ export default function EthicsSimulator() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">

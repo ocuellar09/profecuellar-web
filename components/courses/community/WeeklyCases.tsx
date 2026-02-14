@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   MessageCircle,
   ChevronDown,
@@ -460,14 +460,26 @@ function CaseView({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
+const CASES_STORAGE_KEY = "profecuellar:weekly-cases:v1";
+
 export default function WeeklyCases() {
   const [responses, setResponses] = useState<Record<number, UserResponse>>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(CASES_STORAGE_KEY) : null;
+      if (raw) return JSON.parse(raw);
+    } catch {}
     const init: Record<number, UserResponse> = {};
     cases.forEach(c => { init[c.week] = { caseWeek: c.week, responses: Array(c.prompts.length).fill(""), completed: false }; });
     return init;
   });
   const [expandedCase, setExpandedCase] = useState<number | null>(1);
   const [filter, setFilter] = useState<"all" | "ética" | "técnica" | "pedagógica" | "integración">("all");
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CASES_STORAGE_KEY, JSON.stringify(responses));
+    } catch {}
+  }, [responses]);
 
   const updateResponse = useCallback((week: number, r: UserResponse) => {
     setResponses(prev => ({ ...prev, [week]: r }));
@@ -477,7 +489,7 @@ export default function WeeklyCases() {
   const completedCount = Object.values(responses).filter(r => r.completed).length;
 
   return (
-    <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

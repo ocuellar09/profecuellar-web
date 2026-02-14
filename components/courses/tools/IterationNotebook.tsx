@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   BookOpen,
   Plus,
@@ -561,11 +561,25 @@ function StatsDashboard({ sessions }: { sessions: Session[] }) {
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
+const ITERATION_STORAGE_KEY = "profecuellar:iteration-notebook:v1";
+
 export default function IterationNotebook() {
-  const [sessions, setSessions] = useState<Session[]>([]);
+  const [sessions, setSessions] = useState<Session[]>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(ITERATION_STORAGE_KEY) : null;
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return [];
+  });
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
   const [showNewForm, setShowNewForm] = useState(false);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(ITERATION_STORAGE_KEY, JSON.stringify(sessions));
+    } catch {}
+  }, [sessions]);
 
   const addSession = useCallback((s: Session) => {
     setSessions(prev => [s, ...prev]);
@@ -588,7 +602,7 @@ export default function IterationNotebook() {
   }, [sessions, filter]);
 
   return (
-    <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

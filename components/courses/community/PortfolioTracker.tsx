@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   FolderOpen,
   Plus,
@@ -501,11 +501,37 @@ function SummaryView({ weeks, competencies }: { weeks: WeekData[]; competencies:
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
+const PORTFOLIO_STORAGE_KEY = "profecuellar:portfolio-tracker:v1";
+
 export default function ProgressivePortfolio() {
-  const [weeks, setWeeks] = useState<WeekData[]>(createInitialWeeks);
-  const [competencies, setCompetencies] = useState<CompetencyRating[]>(createInitialCompetencies);
+  const [weeks, setWeeks] = useState<WeekData[]>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(PORTFOLIO_STORAGE_KEY) : null;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.weeks) return parsed.weeks;
+      }
+    } catch {}
+    return createInitialWeeks();
+  });
+  const [competencies, setCompetencies] = useState<CompetencyRating[]>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(PORTFOLIO_STORAGE_KEY) : null;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.competencies) return parsed.competencies;
+      }
+    } catch {}
+    return createInitialCompetencies();
+  });
   const [expandedWeek, setExpandedWeek] = useState<number | null>(1);
   const [activeTab, setActiveTab] = useState<"portfolio" | "competencies" | "summary">("portfolio");
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify({ weeks, competencies }));
+    } catch {}
+  }, [weeks, competencies]);
 
   const updateWeek = useCallback((weekNum: number, data: WeekData) => {
     setWeeks(prev => prev.map(w => w.week === weekNum ? data : w));
@@ -521,7 +547,7 @@ export default function ProgressivePortfolio() {
   const totalEntries = weeks.reduce((a, w) => a + w.entries.length, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

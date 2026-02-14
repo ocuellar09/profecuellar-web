@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   CheckCircle2,
   XCircle,
@@ -729,11 +729,25 @@ interface ModuleQuizProps {
   moduleId?: string;
 }
 
+const QUIZ_STORAGE_KEY = "profecuellar:module-quiz:v1";
+
 export default function ModuleQuiz({ moduleId }: ModuleQuizProps) {
   const [activeQuizId, setActiveQuizId] = useState<string | null>(moduleId ?? null);
   const [answers, setAnswers] = useState<Record<string, boolean>>({});
   const [showResults, setShowResults] = useState(false);
-  const [completedQuizzes, setCompletedQuizzes] = useState<Record<string, number>>({});
+  const [completedQuizzes, setCompletedQuizzes] = useState<Record<string, number>>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(QUIZ_STORAGE_KEY) : null;
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return {};
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(completedQuizzes));
+    } catch {}
+  }, [completedQuizzes]);
 
   const activeQuiz = activeQuizId ? quizModules[activeQuizId] : null;
 
@@ -773,7 +787,7 @@ export default function ModuleQuiz({ moduleId }: ModuleQuizProps) {
 
     if (showResults) {
       return (
-        <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+        <div className="min-h-screen bg-gray-50 py-10 px-4">
           <ResultsScreen
             quiz={activeQuiz}
             correctCount={correctCount}
@@ -786,7 +800,7 @@ export default function ModuleQuiz({ moduleId }: ModuleQuizProps) {
     }
 
     return (
-      <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+      <div className="min-h-screen bg-gray-50 py-10 px-4">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -839,7 +853,7 @@ export default function ModuleQuiz({ moduleId }: ModuleQuizProps) {
 
   // ── Module selection view ──
   return (
-    <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs font-semibold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">

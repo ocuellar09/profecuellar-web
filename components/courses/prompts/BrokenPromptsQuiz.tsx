@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   Bug,
   CheckCircle2,
@@ -469,9 +469,23 @@ function PromptCard({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
+const BROKEN_PROMPTS_STORAGE_KEY = "profecuellar:broken-prompts:v1";
+
 export default function BrokenPromptsQuiz() {
-  const [scores, setScores] = useState<Record<string, boolean>>({});
+  const [scores, setScores] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(BROKEN_PROMPTS_STORAGE_KEY) : null;
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return {};
+  });
   const [activeFilter, setActiveFilter] = useState<string>("all");
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(BROKEN_PROMPTS_STORAGE_KEY, JSON.stringify(scores));
+    } catch {}
+  }, [scores]);
 
   const handleScore = useCallback((id: string, correct: boolean) => {
     setScores((prev) => ({ ...prev, [id]: correct }));
@@ -486,7 +500,7 @@ export default function BrokenPromptsQuiz() {
   const totalPerfect = Object.values(scores).filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-gray-50/80 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
