@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   Scale,
   ShieldAlert,
@@ -947,23 +948,20 @@ function ScenarioPlayer({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const ETHICS_STORAGE_KEY = "profecuellar:ethics-simulator:v1";
-
 export default function EthicsSimulator() {
   const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
-  const [completedScenarios, setCompletedScenarios] = useState<Set<string>>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(ETHICS_STORAGE_KEY) : null;
-      if (raw) return new Set(JSON.parse(raw));
-    } catch {}
-    return new Set();
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(ETHICS_STORAGE_KEY, JSON.stringify([...completedScenarios]));
-    } catch {}
-  }, [completedScenarios]);
+  const [completedArray, setCompletedArray] = usePersistedToolState<string[]>("ethics-simulator", []);
+  const completedScenarios = useMemo(() => new Set(completedArray), [completedArray]);
+  const setCompletedScenarios = useCallback(
+    (update: Set<string> | ((prev: Set<string>) => Set<string>)) => {
+      setCompletedArray((prev) => {
+        const prevSet = new Set(prev);
+        const next = typeof update === "function" ? update(prevSet) : update;
+        return [...next];
+      });
+    },
+    [setCompletedArray],
+  );
 
   const activeScenario = scenarios.find((s) => s.id === activeScenarioId);
   const progress = completedScenarios.size;

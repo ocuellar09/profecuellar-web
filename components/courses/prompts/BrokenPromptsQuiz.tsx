@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   Bug,
   CheckCircle2,
@@ -469,23 +470,12 @@ function PromptCard({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const BROKEN_PROMPTS_STORAGE_KEY = "profecuellar:broken-prompts:v1";
-
 export default function BrokenPromptsQuiz() {
-  const [scores, setScores] = useState<Record<string, boolean>>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(BROKEN_PROMPTS_STORAGE_KEY) : null;
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return {};
-  });
+  const [scores, setScores] = usePersistedToolState<Record<string, boolean>>(
+    "broken-prompts",
+    {},
+  );
   const [activeFilter, setActiveFilter] = useState<string>("all");
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(BROKEN_PROMPTS_STORAGE_KEY, JSON.stringify(scores));
-    } catch {}
-  }, [scores]);
 
   const handleScore = useCallback((id: string, correct: boolean) => {
     setScores((prev) => ({ ...prev, [id]: correct }));

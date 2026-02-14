@@ -30,6 +30,7 @@ type CourseProgressContextValue = {
   continueRoute: string
   nextSuggestedRoute: string | null
   isAuthenticated: boolean
+  userId: string | null
   openSaveProgress: () => void
   markComplete: (route: string) => void
   markIncomplete: (route: string) => void
@@ -369,6 +370,7 @@ export function CourseProgressProvider({ children }: { children: ReactNode }) {
       continueRoute,
       nextSuggestedRoute,
       isAuthenticated,
+      userId,
       openSaveProgress: () => setSaveModalOpen(true),
       markComplete,
       markIncomplete,
@@ -384,6 +386,7 @@ export function CourseProgressProvider({ children }: { children: ReactNode }) {
       continueRoute,
       nextSuggestedRoute,
       isAuthenticated,
+      userId,
       markComplete,
       markIncomplete,
       isComplete,

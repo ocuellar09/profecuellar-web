@@ -1,7 +1,8 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   ShieldCheck,
   AlertTriangle,
@@ -631,23 +632,12 @@ function AuditSummary({ statuses }: { statuses: Record<string, AuditStatus> }) {
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const BIAS_STORAGE_KEY = "profecuellar:bias-audit:v1";
-
 export default function BiasAuditKit() {
-  const [statuses, setStatuses] = useState<Record<string, AuditStatus>>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(BIAS_STORAGE_KEY) : null;
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return {};
-  });
+  const [statuses, setStatuses] = usePersistedToolState<Record<string, AuditStatus>>(
+    "bias-audit",
+    {},
+  );
   const [expandedCat, setExpandedCat] = useState<string | null>("representation");
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(BIAS_STORAGE_KEY, JSON.stringify(statuses));
-    } catch {}
-  }, [statuses]);
 
   const updateStatus = useCallback((itemId: string, status: AuditStatus) => {
     setStatuses(prev => ({ ...prev, [itemId]: status }));

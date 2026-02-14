@@ -1,7 +1,8 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   Shield,
   Lock,
@@ -412,24 +413,13 @@ function ScenarioValidator() {
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const PRIVACY_STORAGE_KEY = "profecuellar:privacy-checklist:v1";
-
 export default function PrivacyChecklist() {
-  const [statuses, setStatuses] = useState<Record<string, CheckStatus>>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(PRIVACY_STORAGE_KEY) : null;
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return {};
-  });
+  const [statuses, setStatuses] = usePersistedToolState<Record<string, CheckStatus>>(
+    "privacy-checklist",
+    {},
+  );
   const [expandedSection, setExpandedSection] = useState<string | null>("before-use");
   const [activeTab, setActiveTab] = useState<"checklist" | "anonymize" | "scenarios">("checklist");
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(PRIVACY_STORAGE_KEY, JSON.stringify(statuses));
-    } catch {}
-  }, [statuses]);
 
   const updateStatus = useCallback((id: string, s: CheckStatus) => {
     setStatuses(prev => ({ ...prev, [id]: s }));

@@ -1,7 +1,8 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   Award,
   ChevronDown,
@@ -467,23 +468,12 @@ function RubricView({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const RUBRICS_STORAGE_KEY = "profecuellar:anchor-rubrics:v1";
-
 export default function RubricsWithAnchors() {
-  const [assessments, setAssessments] = useState<Record<string, LevelIndex | null>>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(RUBRICS_STORAGE_KEY) : null;
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return {};
-  });
+  const [assessments, setAssessments] = usePersistedToolState<Record<string, LevelIndex | null>>(
+    "anchor-rubrics",
+    {},
+  );
   const [expandedRubric, setExpandedRubric] = useState<string | null>("prompt-quality");
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(RUBRICS_STORAGE_KEY, JSON.stringify(assessments));
-    } catch {}
-  }, [assessments]);
 
   const handleAssess = useCallback((criterionId: string, level: LevelIndex) => {
     setAssessments(prev => ({

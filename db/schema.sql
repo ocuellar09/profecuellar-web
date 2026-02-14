@@ -109,3 +109,33 @@ create policy "users_insert_own_lead_events"
   on public.lead_events
   for insert
   with check (auth.uid() = user_id or user_id is null);
+
+-- Tool-level progress (JSONB blobs per tool per user).
+create table if not exists public.tool_progress (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  course_slug text not null,
+  tool_key text not null,
+  data jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id, course_slug, tool_key)
+);
+
+create index if not exists idx_tool_progress_user_course
+  on public.tool_progress (user_id, course_slug);
+
+alter table public.tool_progress enable row level security;
+
+drop policy if exists "users_select_own_tool_progress" on public.tool_progress;
+create policy "users_select_own_tool_progress"
+  on public.tool_progress
+  for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "users_upsert_own_tool_progress" on public.tool_progress;
+create policy "users_upsert_own_tool_progress"
+  on public.tool_progress
+  for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);

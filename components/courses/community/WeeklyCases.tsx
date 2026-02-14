@@ -1,7 +1,8 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   MessageCircle,
   ChevronDown,
@@ -460,26 +461,19 @@ function CaseView({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const CASES_STORAGE_KEY = "profecuellar:weekly-cases:v1";
+function createInitialResponses(): Record<number, UserResponse> {
+  const init: Record<number, UserResponse> = {};
+  cases.forEach(c => { init[c.week] = { caseWeek: c.week, responses: Array(c.prompts.length).fill(""), completed: false }; });
+  return init;
+}
 
 export default function WeeklyCases() {
-  const [responses, setResponses] = useState<Record<number, UserResponse>>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(CASES_STORAGE_KEY) : null;
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    const init: Record<number, UserResponse> = {};
-    cases.forEach(c => { init[c.week] = { caseWeek: c.week, responses: Array(c.prompts.length).fill(""), completed: false }; });
-    return init;
-  });
+  const [responses, setResponses] = usePersistedToolState<Record<number, UserResponse>>(
+    "weekly-cases",
+    createInitialResponses(),
+  );
   const [expandedCase, setExpandedCase] = useState<number | null>(1);
   const [filter, setFilter] = useState<"all" | "ética" | "técnica" | "pedagógica" | "integración">("all");
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(CASES_STORAGE_KEY, JSON.stringify(responses));
-    } catch {}
-  }, [responses]);
 
   const updateResponse = useCallback((week: number, r: UserResponse) => {
     setResponses(prev => ({ ...prev, [week]: r }));

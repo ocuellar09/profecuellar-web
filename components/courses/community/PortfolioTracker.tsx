@@ -1,7 +1,8 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   FolderOpen,
   Plus,
@@ -501,37 +502,38 @@ function SummaryView({ weeks, competencies }: { weeks: WeekData[]; competencies:
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const PORTFOLIO_STORAGE_KEY = "profecuellar:portfolio-tracker:v1";
+type PortfolioData = { weeks: WeekData[]; competencies: CompetencyRating[] };
 
 export default function ProgressivePortfolio() {
-  const [weeks, setWeeks] = useState<WeekData[]>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(PORTFOLIO_STORAGE_KEY) : null;
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.weeks) return parsed.weeks;
-      }
-    } catch {}
-    return createInitialWeeks();
-  });
-  const [competencies, setCompetencies] = useState<CompetencyRating[]>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(PORTFOLIO_STORAGE_KEY) : null;
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.competencies) return parsed.competencies;
-      }
-    } catch {}
-    return createInitialCompetencies();
-  });
+  const [portfolioData, setPortfolioData] = usePersistedToolState<PortfolioData>(
+    "portfolio-tracker",
+    { weeks: createInitialWeeks(), competencies: createInitialCompetencies() },
+  );
+
+  const { weeks, competencies } = portfolioData;
+
+  const setWeeks = useCallback(
+    (update: WeekData[] | ((prev: WeekData[]) => WeekData[])) => {
+      setPortfolioData((prev) => ({
+        ...prev,
+        weeks: typeof update === "function" ? update(prev.weeks) : update,
+      }));
+    },
+    [setPortfolioData],
+  );
+
+  const setCompetencies = useCallback(
+    (update: CompetencyRating[] | ((prev: CompetencyRating[]) => CompetencyRating[])) => {
+      setPortfolioData((prev) => ({
+        ...prev,
+        competencies: typeof update === "function" ? update(prev.competencies) : update,
+      }));
+    },
+    [setPortfolioData],
+  );
+
   const [expandedWeek, setExpandedWeek] = useState<number | null>(1);
   const [activeTab, setActiveTab] = useState<"portfolio" | "competencies" | "summary">("portfolio");
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify({ weeks, competencies }));
-    } catch {}
-  }, [weeks, competencies]);
 
   const updateWeek = useCallback((weekNum: number, data: WeekData) => {
     setWeeks(prev => prev.map(w => w.week === weekNum ? data : w));

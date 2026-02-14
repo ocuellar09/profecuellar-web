@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { usePersistedToolState } from "@/hooks/usePersistedToolState";
 import {
   Layers,
   User,
@@ -422,25 +423,14 @@ function FieldEditor({
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
-const CREFO_STORAGE_KEY = "profecuellar:crefo-builder:v1";
-
 export default function CrefoBuilder() {
-  const [values, setValues] = useState<Record<CrefoKey, string>>(() => {
-    try {
-      const raw = typeof window !== "undefined" ? localStorage.getItem(CREFO_STORAGE_KEY) : null;
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return { contexto: "", rol: "", especificidad: "", formato: "", objetivos: "" };
-  });
+  const [values, setValues] = usePersistedToolState<Record<CrefoKey, string>>(
+    "crefo-builder",
+    { contexto: "", rol: "", especificidad: "", formato: "", objetivos: "" },
+  );
   const [expandedField, setExpandedField] = useState<CrefoKey | null>("contexto");
   const [showPreview, setShowPreview] = useState(true);
   const [showTemplates, setShowTemplates] = useState(true);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(CREFO_STORAGE_KEY, JSON.stringify(values));
-    } catch {}
-  }, [values]);
 
   const updateField = useCallback((key: CrefoKey, val: string) => {
     setValues((prev) => ({ ...prev, [key]: val }));
