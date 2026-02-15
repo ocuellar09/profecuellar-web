@@ -397,7 +397,7 @@ function CaseView({
                       <div className="space-y-2">
                         <textarea value={draft} onChange={e => setDraft(e.target.value)}
                           rows={4} placeholder="Escribe tu respuesta para el foro..."
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
                         <div className="flex gap-2">
                           <button onClick={saveEdit} className="flex items-center gap-1 text-xs font-medium bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700">
                             <Save className="w-3 h-3" /> Guardar

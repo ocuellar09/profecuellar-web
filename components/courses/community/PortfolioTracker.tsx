@@ -161,10 +161,10 @@ function EntryCard({ entry, onUpdate, onDelete }: {
           <div className="space-y-2">
             <input value={draft.title} onChange={e => setDraft({ ...draft, title: e.target.value })}
               placeholder="Título de la evidencia"
-              className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+              className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-300" />
             <textarea value={draft.content} onChange={e => setDraft({ ...draft, content: e.target.value })}
               placeholder="Pega tu prompt, reflexión o descripción del artefacto..."
-              rows={4} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
+              rows={4} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
             <div>
               <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Etiquetas</span>
               <div className="flex flex-wrap gap-1 mt-1">
@@ -329,7 +329,7 @@ function WeekSection({ week, onUpdate, expanded, onToggle }: {
               <div className="space-y-2">
                 <textarea value={reflDraft} onChange={e => setReflDraft(e.target.value)}
                   rows={3} placeholder="Responde a la pregunta guía con tu experiencia real esta semana..."
-                  className="w-full rounded-lg border border-violet-300 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-violet-300 resize-y bg-white" />
+                  className="w-full rounded-lg border border-violet-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 leading-relaxed focus:outline-none focus:ring-2 focus:ring-violet-300 resize-y bg-white" />
                 <div className="flex gap-2">
                   <button onClick={saveReflection} className="text-xs font-medium bg-violet-600 text-white px-3 py-1.5 rounded-lg hover:bg-violet-700">Guardar</button>
                   <button onClick={() => setEditingReflection(false)} className="text-xs text-gray-500 px-3">Cancelar</button>

@@ -114,7 +114,7 @@ function ManifestoBuilder() {
                     onChange={e => setValues(v => ({ ...v, [p.id]: e.target.value }))}
                     rows={2}
                     placeholder={p.placeholder}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 resize-y"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 leading-relaxed focus:outline-none focus:ring-2 resize-y"
                     style={{ "--tw-ring-color": p.color + "60" } as React.CSSProperties}
                   />
                 </div>

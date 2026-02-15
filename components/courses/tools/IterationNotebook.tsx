@@ -191,7 +191,7 @@ function IterationCard({
                 </div>
                 {editing ? (
                   <textarea value={draft.prompt} onChange={e => setDraft({ ...draft, prompt: e.target.value })}
-                    rows={4} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
+                    rows={4} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
                 ) : (
                   <pre className="text-sm text-gray-800 leading-relaxed whitespace-pre-line font-mono bg-gray-50 rounded-lg p-3 border border-gray-100">
                     {iteration.prompt}
@@ -204,7 +204,7 @@ function IterationCard({
                 <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">Resultado obtenido</span>
                 {editing ? (
                   <textarea value={draft.result} onChange={e => setDraft({ ...draft, result: e.target.value })}
-                    rows={3} className="w-full mt-1 rounded-lg border border-gray-300 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
+                    rows={3} className="w-full mt-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
                 ) : (
                   <p className="text-sm text-blue-900 bg-blue-50 rounded-lg p-3 border border-blue-100 mt-1 leading-relaxed whitespace-pre-line">
                     {iteration.result || "(sin documentar)"}
@@ -217,7 +217,7 @@ function IterationCard({
                 <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Análisis: ¿qué falta/sobra?</span>
                 {editing ? (
                   <textarea value={draft.analysis} onChange={e => setDraft({ ...draft, analysis: e.target.value })}
-                    rows={2} className="w-full mt-1 rounded-lg border border-gray-300 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
+                    rows={2} className="w-full mt-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
                 ) : (
                   <p className="text-sm text-amber-900 bg-amber-50 rounded-lg p-3 border border-amber-100 mt-1 leading-relaxed">
                     {iteration.analysis || "(sin documentar)"}
@@ -230,7 +230,7 @@ function IterationCard({
                 <span className="text-[10px] font-bold text-violet-600 uppercase tracking-wider">Cambio para siguiente versión</span>
                 {editing ? (
                   <textarea value={draft.change} onChange={e => setDraft({ ...draft, change: e.target.value })}
-                    rows={1} className="w-full mt-1 rounded-lg border border-gray-300 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
+                    rows={1} className="w-full mt-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-y" />
                 ) : (
                   <p className="text-sm text-violet-900 bg-violet-50 rounded-lg p-3 border border-violet-100 mt-1 leading-relaxed flex items-start gap-2">
                     <ArrowRight className="w-4 h-4 text-violet-500 flex-shrink-0 mt-0.5" />
@@ -408,7 +408,7 @@ function SessionCard({
               <div className="space-y-2">
                 <textarea value={insightDraft} onChange={e => setInsightDraft(e.target.value)}
                   rows={2} placeholder="¿Qué aprendiste de esta sesión de iteración? ¿Qué patrón descubriste?"
-                  className="w-full rounded-lg border border-amber-300 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-300 resize-y bg-white" />
+                  className="w-full rounded-lg border border-amber-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-300 resize-y bg-white" />
                 <div className="flex gap-2">
                   <button onClick={saveInsight} className="text-xs font-medium text-amber-700 bg-amber-200 px-3 py-1 rounded-lg hover:bg-amber-300">Guardar</button>
                   <button onClick={() => setEditingInsight(false)} className="text-xs text-gray-500 px-3 py-1">Cancelar</button>
@@ -494,13 +494,13 @@ function NewSessionForm({ onSave, onCancel }: { onSave: (s: Session) => void; on
       <div>
         <label className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-1 block">Título</label>
         <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Ej: Optimizar prompt de rúbrica para 4º ESO"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
       </div>
 
       <div>
         <label className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-1 block">Objetivo</label>
         <input value={objective} onChange={e => setObjective(e.target.value)} placeholder="¿Qué quieres lograr con esta iteración?"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
       </div>
 
       <div>
